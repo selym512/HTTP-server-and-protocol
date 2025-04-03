@@ -13,28 +13,26 @@ func main() {
 	}
 	ch := getLinesChannel(file)
 	for {
-
-		fmt.Println("read: ", <-ch)
+		line, ok := <-ch
+		if !ok {
+			break
+		}
+		fmt.Printf("read: %s\n", line)
 
 	}
-
 }
-
 func getLinesChannel(f io.ReadCloser) <-chan string {
-
 	ch := make(chan string)
-
 	go func() {
-
 		var b []byte = make([]byte, 8)
 		var line []byte
-
 		for {
 			blen, err := f.Read(b)
 			b = b[:blen]
 			if err == io.EOF {
 				f.Close()
-				os.Exit(0)
+				close(ch)
+				break
 			}
 			if err != nil {
 				log.Println("File error")
@@ -50,6 +48,5 @@ func getLinesChannel(f io.ReadCloser) <-chan string {
 			}
 		}
 	}()
-
 	return ch
 }
