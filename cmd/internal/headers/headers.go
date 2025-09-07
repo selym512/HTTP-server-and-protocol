@@ -50,6 +50,12 @@ func (h Headers) Set(key, value string) {
 	}
 	h[key] = value
 }
+func (h Headers) Overwrite(key, value string) {
+	h[key] = value
+}
+func (h Headers) Remove(key string) {
+	delete(h, key)
+}
 
 var tokenChars = []byte{'!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~'}
 
